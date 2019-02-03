@@ -1,38 +1,43 @@
+import { connect } from "react-redux";
 import React from "react";
 import { Button } from 'reactstrap';
 
+import { deleteClip } from '../../actions/index';
+
 import "./clip.module.scss";
 
-// export default class Clip extends React.Component {
-//   constructor(props) {
-//     super(props);
+function mapDispatchToProps(dispatch) {
+  return {
+    deleteClip: clipId => dispatch(deleteClip(clipId))
+  };
+}
 
-//     // this.state = {
-//     //   modal: false
-//     // };
-//   }
+class Clip extends React.Component {
+  constructor(props) {
+    super(props);
+    
+    this.deleteClip = this.deleteClip.bind(this);
+  }
 
-//   render({clip}) {
-//     return (
-//       <div>
-//         <h5>{clip.name}</h5>
-//         <div>
-//           <Button color="primary">P</Button>
-//           <Button color="primary">E</Button>
-//           <Button color="danger">D</Button>
-//         </div>
-//       </div>
-//     );
-//   }
-// }
+  deleteClip(e) {
+    this.props.deleteClip({
+      id: this.props.id
+    });
+  }
 
-export default (clip) => (
-  <div className="d-flex">
-    <span className="flex-grow-1">{clip.name}</span>
-    <div className="btn-group">
-      <Button color="primary">P</Button>
-      <Button color="primary">E</Button>
-      <Button color="danger" onClick={clip.onDelete}>D</Button>
+  render() {
+    const {name} = this.props;
+    return (
+      <div className="d-flex">
+        <span className="flex-grow-1">{name}</span>
+        <div className="btn-group">
+          <Button color="primary">P</Button>
+          <Button color="primary">E</Button>
+          <Button color="danger" onClick={this.deleteClip}>D</Button>
+        </div>
     </div>
-  </div>
-)
+    );
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Clip);

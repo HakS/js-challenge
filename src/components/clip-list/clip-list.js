@@ -15,7 +15,7 @@ export default ({clips, onDelete=() => {} }) => (
     </div>
     <ul className="list-group list-group-flush">{clips.map(clip =>
       <li className="list-group-item" key="{clip.id}">
-        <Clip onDelete={onDelete.bind(null, clip.id)} {...clip}></Clip>
+        <Clip {...clip}></Clip>
       </li>
     )}</ul>
   </div>
