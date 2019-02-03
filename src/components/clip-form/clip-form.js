@@ -8,7 +8,8 @@ export default class ClipForm extends React.Component {
     super(props);
 
     this.state = {
-      modal: false
+      modal: false,
+      currentClip: null,
     };
   }
 
