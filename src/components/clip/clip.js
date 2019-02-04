@@ -2,28 +2,21 @@ import { connect } from "react-redux";
 import React from "react";
 import { Button } from 'reactstrap';
 
-import { toggleModal, deleteClip } from '../../actions/index';
+import { toggleModal, deleteClip, toggleVideoPlay } from '../../actions/index';
 
 import "./clip.module.scss";
-
-function mapDispatchToProps(dispatch) {
-  return {
-    changeFormData: formData => {
-      dispatch(toggleModal({
-        modal: true,
-        currentClip: formData
-      }));
-    },
-    deleteClip: payload => dispatch(deleteClip(payload))
-  };
-}
 
 class Clip extends React.Component {
   constructor(props) {
     super(props);
 
+    this.toggleVideoPlay = this.toggleVideoPlay.bind(this);
     this.changeFormData = this.changeFormData.bind(this);
     this.deleteClip = this.deleteClip.bind(this);
+  }
+
+  toggleVideoPlay() {
+    this.props.toggleVideoPlay(this.props.id);
   }
 
   changeFormData() {
@@ -38,12 +31,14 @@ class Clip extends React.Component {
   }
 
   render() {
-    const {name} = this.props;
+    const {id, name, playing} = this.props;
     return (
       <div className="d-flex">
         <span className="flex-grow-1">{name}</span>
         <div className="btn-group">
-          <Button color="primary">P</Button>
+          <Button color="primary" onClick={this.toggleVideoPlay}>
+            {playing === id ? 'S' : 'P'}
+          </Button>
           <Button color="primary" onClick={this.changeFormData}>E</Button>
           <Button color="danger" onClick={this.deleteClip}>D</Button>
         </div>
@@ -52,4 +47,22 @@ class Clip extends React.Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Clip);
+export default connect(
+  state => {
+    return {
+      playing: state.playing
+    }
+  },
+  dispatch => {
+    return {
+      changeFormData: formData => {
+        dispatch(toggleModal({
+          modal: true,
+          currentClip: formData
+        }));
+      },
+      deleteClip: payload => dispatch(deleteClip(payload)),
+      toggleVideoPlay: play => dispatch(toggleVideoPlay(play))
+    };
+  }
+)(Clip);

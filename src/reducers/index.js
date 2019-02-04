@@ -1,17 +1,9 @@
-import uuid from 'uuid';
 
 const initialState = {
-  clips: [
-    {
-      id: uuid.v4(),
-      name: 'The first clip',
-      start: 4,
-      end: 9,
-      tags: [
-        'foo', 'bar'
-      ]
-    }
-  ],
+  clips: [],
+  playing: '',
+  videoStart: null,
+  videoEnd: null,
   currentClip: null,
   modal: false
 };
@@ -50,6 +42,21 @@ function rootReducer(state = initialState, action) {
       modal: action.payload.modal
     }};
     newState.currentClip = action.payload.currentClip || null;
+    return newState;
+  }
+
+  if (action.type === "TOGGLE_VIDEO_PLAY") {
+    const newState = {...state, ...{
+      playing: action.payload
+    }};
+    const playingClip = state.clips.find(clip => clip.id === action.payload);
+    if (playingClip) {
+      newState.videoStart = playingClip.start;
+      newState.videoEnd = playingClip.end;
+    } else {
+      newState.videoStart = null;
+      newState.videoEnd = null;
+    }
     return newState;
   }
 

@@ -11,6 +11,7 @@ import {
 
 import "./clip-form.module.scss";
 import { addClip, updateClip, toggleModal } from '../../actions/index';
+import { isNull } from 'util';
 
 class ClipForm extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class ClipForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ('currentClip' in prevProps && this.props.currentClip !== prevProps.currentClip) {
+    if (this.props.currentClip !== prevProps.currentClip) {
       if (!this.props.currentClip) {
         this.setState({
           id: null,
@@ -50,10 +51,15 @@ class ClipForm extends React.Component {
     } else {
       this.props.updateClip({id, name, start, end});
     }
+    this.setState({
+      id: null,
+      name: '',
+      start: 0,
+      end: 0
+    });
   }
 
   handleChange(event) {
-    // this.props.updateModalData({ [event.target.id]: event.target.value });
     this.setState({ [event.target.id]: event.target.value });
   }
 
