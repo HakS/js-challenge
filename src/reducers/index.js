@@ -74,9 +74,35 @@ function rootReducer(state = initialState, action) {
       newState.videoStart = playingClip.start;
       newState.videoEnd = playingClip.end;
     } else {
+      newState.playing = '';
       newState.videoStart = null;
       newState.videoEnd = null;
     }
+    return newState;
+  }
+
+  if (action.type === "PLAY_CONTROL") {
+    if (action.payload !== 'prev' && action.payload !== 'next') return state;
+
+    const newState = {...state};
+    let playingClip;
+    const limit = action.payload === 'prev' ? 0 : newState.clips.length - 1;
+    const op = action.payload === 'prev' ? -1 : 1;
+
+    if (newState.playing === '') {
+      playingClip = newState.clips[limit];
+    } else {
+      const clipIndex = newState.clips.findIndex(clip => clip.id === newState.playing);
+      if (clipIndex === limit) return state;
+      playingClip = newState.clips[clipIndex + op];
+    }
+
+    if (playingClip) {
+      newState.playing = playingClip.id;
+      newState.videoStart = playingClip.start;
+      newState.videoEnd = playingClip.end;
+    }
+
     return newState;
   }
 

@@ -5,7 +5,7 @@ import { Button } from 'reactstrap';
 import ClipList from "./clip-list/clip-list";
 import VideoItem from "./video-item/video-item";
 import ClipForm from "./clip-form/clip-form";
-import { toggleModal } from '../actions/index';
+import { toggleModal, playControl } from '../actions/index';
 
 class Main extends React.Component {
   constructor(props) {
@@ -13,6 +13,18 @@ class Main extends React.Component {
 
     this.activateClipModal = this.activateClipModal.bind(this);
   }
+
+  componentDidMount() {
+    window.addEventListener("keydown", this.handleKeyPress);
+  }
+
+  handleKeyPress = event => {
+    const actionMap = {
+      ArrowUp: 'prev',
+      ArrowDown: 'next'
+    }
+    this.props.playControl(actionMap[event.key]);
+  };
 
   render() {
     const {clips} = this.props;
@@ -46,7 +58,8 @@ export default connect(
     return {
       activateClipModal: () => dispatch(toggleModal({
         modal: true
-      }))
+      })),
+      playControl: direction => dispatch(playControl(direction))
     }
   }
 )(Main);

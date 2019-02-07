@@ -16,3 +16,6 @@ export function toggleModal(payload) {
 export function toggleVideoPlay(payload) {
   return { type: "TOGGLE_VIDEO_PLAY", payload }
 };
+export function playControl(payload) {
+  return { type: "PLAY_CONTROL", payload }
+};
