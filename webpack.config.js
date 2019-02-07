@@ -3,6 +3,12 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
+const env = process.env.NODE_ENV;
+
+const config = {
+  mode: env || 'development'
+};
+
 const stylesSettings = (modularize) => {
   const cssLoader = {
     modules: modularize,
@@ -61,10 +67,9 @@ const webpackConfig = {
   ]
 };
 
-if (process.env.NODE_ENV === 'development') {
+if (config.mode === 'development') {
   webpackConfig.devtool = 'inline-source-map';
-  webpackConfig.mode = 'development';
-} else if (process.env.NODE_ENV === 'production') {
+} else if (config.mode === 'production') {
   webpackConfig.plugins.push(new UglifyJSPlugin({
     sourceMap: false
   }));
