@@ -97,14 +97,16 @@ class ClipForm extends React.Component {
           <ModalBody>
             <div className="form-group">
               <label htmlFor="name">Name</label>
-              <input type="text" className="form-control" id="name" required
+              <input type="text" id="name" required
+              className={`form-control ${(name == '') ? 'is-invalid' : ''}`}
               value={name}
               onChange={this.handleChange}
               placeholder="Enter a name for the clip" />
             </div>
             <div className="form-group">
               <label htmlFor="start">Start time</label>
-              <input type="number" min="0" max={videoLength} step="1" className="form-control" id="start"
+              <input type="number" min="0" max={videoLength} step="1"
+              className={`form-control ${(isNaN(start) || start >= end || start > (this.props.videoLength - 1)) ? 'is-invalid' : ''}`} id="start"
               value={start}
               onChange={this.handleChange}
               required
@@ -113,7 +115,8 @@ class ClipForm extends React.Component {
             </div>
             <div className="form-group">
               <label htmlFor="end">End time</label>
-              <input type="number" min={+start + 1} max={videoLength} step="1" className="form-control" id="end"
+              <input type="number" min={+start + 1} max={videoLength} step="1" id="end"
+              className={`form-control ${(isNaN(end) || start >= end || end > this.props.videoLength) ? 'is-invalid' : ''}`}
               value={end}
               onChange={this.handleChange}
               required
