@@ -5,14 +5,29 @@ const initialState = {
   videoStart: null,
   videoEnd: null,
   currentClip: null,
-  modal: false
+  modal: false,
+  availableTags: []
 };
+
+
 function rootReducer(state = initialState, action) {
+  const mergeTags = () => {
+    const availableTags = [...state.availableTags];
+    action.payload.tags.map(tag => {
+      const exists = availableTags.find(avTag => avTag.value === tag.value);
+      if (!exists) {
+        availableTags.push(tag);
+      }
+    });
+    return availableTags;
+  }
+
   if (action.type === "ADD_CLIP") {
     return {...state, ...{
       clips: state.clips.concat(action.payload),
       modal: false,
-      currentClip: null
+      currentClip: null,
+      availableTags: mergeTags()
     }}
   }
 
@@ -25,7 +40,8 @@ function rootReducer(state = initialState, action) {
         return clip;
       }),
       modal: false,
-      currentClip: null
+      currentClip: null,
+      availableTags: mergeTags()
     }}
   }
 
@@ -41,7 +57,11 @@ function rootReducer(state = initialState, action) {
     const newState = {...state, ...{
       modal: action.payload.modal
     }};
-    newState.currentClip = action.payload.currentClip || null;
+    if (!action.payload.modal) {
+      newState.currentClip = null;
+    } else {
+      newState.currentClip = action.payload.currentClip || null;
+    }
     return newState;
   }
 

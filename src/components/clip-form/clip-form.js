@@ -1,6 +1,7 @@
 import uuid from 'uuid';
 import React from "react";
 import { connect } from "react-redux";
+import CreatableSelect from 'react-select/lib/Creatable';
 import {
   Button,
   Modal,
@@ -11,7 +12,6 @@ import {
 
 import "./clip-form.module.scss";
 import { addClip, updateClip, toggleModal } from '../../actions/index';
-import { isNull } from 'util';
 
 class ClipForm extends React.Component {
   constructor(props) {
@@ -21,23 +21,21 @@ class ClipForm extends React.Component {
     this.handleForm = this.handleForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
-    this.state = {
+    this.initialState = {
       id: null,
       name: '',
       start: 0,
-      end: 0
-    }
+      end: 0,
+      tags: null
+    };
+
+    this.state = {...this.initialState};
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.currentClip !== prevProps.currentClip) {
       if (!this.props.currentClip) {
-        this.setState({
-          id: null,
-          name: '',
-          start: 0,
-          end: 0
-        });
+        this.setState({...this.initialState});
       } else {
         this.setState({...this.state, ...this.props.currentClip});
       }
@@ -45,18 +43,13 @@ class ClipForm extends React.Component {
   }
 
   handleForm() {
-    const {id, name, start, end} = this.state;
+    const {id, name, start, end, tags} = this.state;
     if (!this.state.id) {
-      this.props.addClip({id: uuid.v4(), name, start, end});
+      this.props.addClip({id: uuid.v4(), name, start, end, tags});
     } else {
-      this.props.updateClip({id, name, start, end});
+      this.props.updateClip({id, name, start, end, tags});
     }
-    this.setState({
-      id: null,
-      name: '',
-      start: 0,
-      end: 0
-    });
+    this.setState({...this.initialState});
   }
 
   handleChange(event) {
@@ -64,14 +57,30 @@ class ClipForm extends React.Component {
   }
 
   toggle() {
+    if (this.props.modal) {
+      this.setState({...this.initialState});
+    }
     this.props.toggle({
       modal: !this.props.modal
-    })
+    });
   }
 
+  handleSelectChange = (newValue, actionMeta) => {
+    if (actionMeta.action === 'select-option' || actionMeta.action === 'create-option') {
+      const tags = [...newValue];
+      tags.map(tag => {
+        delete tag.__isNew__;
+        return tag;
+      })
+      this.setState({
+        tags: tags
+      });
+    }
+  };
+
   render() {
-    const {modal, currentClip} = this.props;
-    const {name, start, end} = this.state;
+    const {modal, currentClip, availableTags} = this.props;
+    const {name, start, end, tags} = this.state;
     return (
       <div>
         <Modal isOpen={modal} toggle={this.toggle}>
@@ -95,10 +104,21 @@ class ClipForm extends React.Component {
             </div>
             <div className="form-group">
               <label htmlFor="end">End time</label>
-              <input type="number" min="0" step="1" className="form-control" id="end"
+              <input type="number" min={+start + 1} step="1" className="form-control" id="end"
               value={end}
               onChange={this.handleChange}
               placeholder="Enter the end time for this clip" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="tags">Tags</label>
+              {(currentClip ? Array.isArray(tags) : true) &&
+                <CreatableSelect
+                  isMulti
+                  onChange={this.handleSelectChange}
+                  defaultValue={tags}
+                  options={availableTags}
+                />
+              }
             </div>
           </ModalBody>
           <ModalFooter>
@@ -118,6 +138,7 @@ export default connect(
     return {
       modal: state.modal,
       currentClip: state.currentClip,
+      availableTags: state.availableTags
     };
   },
   dispatch => {

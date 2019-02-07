@@ -20,8 +20,8 @@ class Clip extends React.Component {
   }
 
   changeFormData() {
-    const {id, name, start, end} = this.props;
-    this.props.changeFormData({id, name, start, end});
+    const {id, name, start, end, tags} = this.props;
+    this.props.changeFormData({id, name, start, end, tags});
   }
 
   deleteClip(e) {
