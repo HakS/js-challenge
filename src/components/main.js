@@ -31,12 +31,12 @@ class Main extends React.Component {
     return (
       <div className="container-fluid mt-3">
         <div className="row">
-          <div className="col-4">
+          <div className="col-4 d-flex">
             <ClipList clips={clips}></ClipList>
           </div>
-          <div className="col-8">
+          <div className="col-8 d-flex flex-column">
             <VideoItem></VideoItem>
-            <Button onClick={this.activateClipModal}>Add clip</Button>
+            <Button className="mt-3" onClick={this.activateClipModal}>Add clip</Button>
           </div>
         </div>
         <ClipForm></ClipForm>

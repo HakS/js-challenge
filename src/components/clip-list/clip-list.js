@@ -31,7 +31,7 @@ class ClipList extends React.Component {
     const {clips, availableTags} = this.props;
     const {selectedTags} = this.state;
     return (
-      <div className="card">
+      <div className="card flex-grow-1">
         <div className="card-header">
           <div className="d-flex">
             <span className="flex-grow-1">Main video</span>

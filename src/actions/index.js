@@ -19,3 +19,6 @@ export function toggleVideoPlay(payload) {
 export function playControl(payload) {
   return { type: "PLAY_CONTROL", payload }
 };
+export function videoLoad(payload) {
+  return { type: "VIDEO_LOAD", payload }
+};

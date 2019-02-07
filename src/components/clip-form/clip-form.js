@@ -26,7 +26,8 @@ class ClipForm extends React.Component {
       name: '',
       start: 0,
       end: 0,
-      tags: null
+      tags: null,
+      valid: false
     };
 
     this.state = {...this.initialState};
@@ -53,7 +54,13 @@ class ClipForm extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({ [event.target.id]: event.target.value });
+    const name = event.target.id === 'name' ? event.target.value : this.state.name;
+    const start = event.target.id === 'start' ? event.target.value : this.state.start;
+    const end = event.target.id === 'end' ? event.target.value : this.state.end;
+    this.setState({
+      [event.target.id]: event.target.value,
+      valid: name !== '' && !isNaN(+end - +start) && +start < +end && end <= this.props.videoLength
+    });
   }
 
   toggle() {
@@ -79,8 +86,8 @@ class ClipForm extends React.Component {
   };
 
   render() {
-    const {modal, currentClip, availableTags} = this.props;
-    const {name, start, end, tags} = this.state;
+    const {modal, currentClip, availableTags, videoLength} = this.props;
+    const {name, start, end, tags, valid} = this.state;
     return (
       <div>
         <Modal isOpen={modal} toggle={this.toggle}>
@@ -90,24 +97,28 @@ class ClipForm extends React.Component {
           <ModalBody>
             <div className="form-group">
               <label htmlFor="name">Name</label>
-              <input type="text" className="form-control" id="name"
+              <input type="text" className="form-control" id="name" required
               value={name}
               onChange={this.handleChange}
               placeholder="Enter a name for the clip" />
             </div>
             <div className="form-group">
               <label htmlFor="start">Start time</label>
-              <input type="number" min="0" step="1" className="form-control" id="start"
+              <input type="number" min="0" max={videoLength} step="1" className="form-control" id="start"
               value={start}
               onChange={this.handleChange}
+              required
               placeholder="Enter the start time for this clip" />
+              <small className="form-text text-muted">Maximun value: {videoLength}</small>
             </div>
             <div className="form-group">
               <label htmlFor="end">End time</label>
-              <input type="number" min={+start + 1} step="1" className="form-control" id="end"
+              <input type="number" min={+start + 1} max={videoLength} step="1" className="form-control" id="end"
               value={end}
               onChange={this.handleChange}
+              required
               placeholder="Enter the end time for this clip" />
+              <small className="form-text text-muted">Minimun value: {+start < (videoLength - 1) ? +start + 1 : videoLength - 1}, maximun value: {videoLength}</small>
             </div>
             <div className="form-group">
               <label htmlFor="tags">Tags</label>
@@ -122,9 +133,9 @@ class ClipForm extends React.Component {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.handleForm}>
-            {currentClip ? 'Update' : 'Create'}
-            </Button>{' '}
+            <Button color="primary" onClick={this.handleForm} disabled={!valid}>
+              {currentClip ? 'Update' : 'Create'}
+            </Button>
             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
@@ -138,7 +149,8 @@ export default connect(
     return {
       modal: state.modal,
       currentClip: state.currentClip,
-      availableTags: state.availableTags
+      availableTags: state.availableTags,
+      videoLength: state.videoLength
     };
   },
   dispatch => {

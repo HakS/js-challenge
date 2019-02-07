@@ -6,7 +6,8 @@ const initialState = {
   videoEnd: null,
   currentClip: null,
   modal: false,
-  availableTags: []
+  availableTags: [],
+  videoLength: null
 };
 
 
@@ -104,6 +105,14 @@ function rootReducer(state = initialState, action) {
     }
 
     return newState;
+  }
+
+  if (action.type === "VIDEO_LOAD") {
+    const length = parseInt(action.payload);
+    if (isNaN(length)) return state;
+    return {...state, ...{
+      videoLength: length
+    }}
   }
 
   return state;
