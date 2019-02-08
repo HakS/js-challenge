@@ -31,16 +31,17 @@ class Clip extends React.Component {
   }
 
   render() {
-    const {id, name, playing} = this.props;
+    const {id, name, playing, readOnly, start, end} = this.props;
+    const rOnly = readOnly || false;
     return (
       <div className="d-flex">
         <span className="flex-grow-1">{name}</span>
         <div className="btn-group">
-          <Button color="primary" onClick={this.toggleVideoPlay}>
+          <Button disabled={+start >= +end } color="primary" onClick={this.toggleVideoPlay}>
             {playing === id ? 'S' : 'P'}
           </Button>
-          <Button color="primary" onClick={this.changeFormData}>E</Button>
-          <Button color="danger" onClick={this.deleteClip}>D</Button>
+          {!rOnly && <Button color="primary" onClick={this.changeFormData}>E</Button>}
+          {!rOnly && <Button color="danger" onClick={this.deleteClip}>D</Button>}
         </div>
     </div>
     );

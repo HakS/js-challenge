@@ -1,7 +1,6 @@
 import React from "react";
 import Clip from "../clip/clip";
 import { connect } from "react-redux";
-import { Button } from 'reactstrap';
 import Select from 'react-select';
 
 import "./clip-list.module.scss";
@@ -32,14 +31,6 @@ class ClipList extends React.Component {
     const {selectedTags} = this.state;
     return (
       <div className="card flex-grow-1">
-        <div className="card-header">
-          <div className="d-flex">
-            <span className="flex-grow-1">Main video</span>
-            <div className="btn-group">
-              <Button color="primary">P</Button>
-            </div>
-          </div>
-        </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item">
             <Select
@@ -49,7 +40,8 @@ class ClipList extends React.Component {
             />
           </li>
           {clips
-            .filter(clip => {
+            .filter((clip,i) => {
+              if (i === 0) return true;
               if (!selectedTags.length) return true;
               // TODO: there must be a more efficient way of making this filtering...
               const a = clip.tags.filter(clipTag => selectedTags.find(selTag => clipTag.value === selTag.value));

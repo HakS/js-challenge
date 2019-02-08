@@ -1,6 +1,15 @@
 
 const initialState = {
-  clips: [],
+  clips: [
+    {
+      id: 'main-video',
+      name: 'Main video',
+      start: 0,
+      end: 0,
+      tags: [],
+      readOnly: true
+    }
+  ],
   playing: '',
   videoStart: null,
   videoEnd: null,
@@ -110,9 +119,12 @@ function rootReducer(state = initialState, action) {
   if (action.type === "VIDEO_LOAD") {
     const length = parseInt(action.payload);
     if (isNaN(length)) return state;
-    return {...state, ...{
-      videoLength: length
-    }}
+    const newState = {...state, ...{
+      videoLength: length,
+      clips: state.clips
+    }};
+    newState.clips[0].end = parseInt(length);
+    return newState;
   }
 
   return state;
