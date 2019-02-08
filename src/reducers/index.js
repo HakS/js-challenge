@@ -121,9 +121,11 @@ function rootReducer(state = initialState, action) {
     if (isNaN(length)) return state;
     const newState = {...state, ...{
       videoLength: length,
-      clips: state.clips
+      clips: [...state.clips]
     }};
-    newState.clips[0].end = parseInt(length);
+    newState.clips[0] = {...newState.clips[0], ...{
+      end: parseInt(length)
+    }};
     return newState;
   }
 
