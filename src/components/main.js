@@ -6,6 +6,7 @@ import ClipList from "./clip-list/clip-list";
 import VideoItem from "./video-item/video-item";
 import ClipForm from "./clip-form/clip-form";
 import { toggleModal, playControl } from '../actions/index';
+import ClipTimeline from './clip-timeline/clip-timeline';
 
 class Main extends React.Component {
   constructor(props) {
@@ -38,6 +39,9 @@ class Main extends React.Component {
             <VideoItem></VideoItem>
             <Button className="mt-3" onClick={this.activateClipModal}>Add clip</Button>
           </div>
+        </div>
+        <div>
+          <ClipTimeline/>
         </div>
         <ClipForm></ClipForm>
       </div>
