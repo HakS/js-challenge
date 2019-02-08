@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import React from "react";
 import { Button } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { toggleModal, deleteClip, toggleVideoPlay } from '../../actions/index';
 
@@ -33,15 +34,27 @@ class Clip extends React.Component {
   render() {
     const {id, name, playing, readOnly, start, end} = this.props;
     const rOnly = readOnly || false;
+
+    let playBtn;
+    if (playing === id) {
+      playBtn = <FontAwesomeIcon icon="stop" />;
+    } else {
+      playBtn = <FontAwesomeIcon icon="play" />;
+    }
+
     return (
       <div className="d-flex">
         <span className="flex-grow-1">{name}</span>
-        <div className="btn-group">
-          <Button disabled={+start >= +end } color="primary" onClick={this.toggleVideoPlay}>
-            {playing === id ? 'S' : 'P'}
+        <div>
+          <Button disabled={+start >= +end } color="primary" className="mr-1" onClick={this.toggleVideoPlay}>
+            {playBtn}
           </Button>
-          {!rOnly && <Button color="primary" onClick={this.changeFormData}>E</Button>}
-          {!rOnly && <Button color="danger" onClick={this.deleteClip}>D</Button>}
+          {!rOnly && <Button color="primary" className="mr-1" onClick={this.changeFormData}>
+            <FontAwesomeIcon icon="pen" />
+          </Button>}
+          {!rOnly && <Button color="danger" onClick={this.deleteClip}>
+            <FontAwesomeIcon icon="trash" />
+          </Button>}
         </div>
     </div>
     );
